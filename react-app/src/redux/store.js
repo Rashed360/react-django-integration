@@ -1,5 +1,6 @@
-import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux'
+import { DEPARTMENT_LOAD, DEPARTMENT_LOAD_FAILED } from './actions'
 
 const initialState = {
 	DEPARTMENT: [],
@@ -9,6 +10,12 @@ const initialState = {
 }
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
+		case DEPARTMENT_LOAD:
+			let department = action.payload
+			return {
+				...state,
+				DEPARTMENT: department,
+			}
 		default:
 			return state
 	}
