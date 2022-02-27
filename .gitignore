@@ -1,0 +1,9 @@
+# django
+venv_app
+media
+db.sqlite3
+
+#react
+node_modules
+.env
+package-lock.json
