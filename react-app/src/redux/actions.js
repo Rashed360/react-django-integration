@@ -26,6 +26,12 @@ export const loadDepartment = data => {
 		payload: data,
 	}
 }
+export const loadingDepartment = mode => {
+	return {
+		type: DEPARTMENT_LOADING,
+		payload: mode,
+	}
+}
 export const loadDepartmentFailed = () => {
 	return {
 		type: DEPARTMENT_LOAD_FAILED,
@@ -33,13 +39,16 @@ export const loadDepartmentFailed = () => {
 }
 
 export const fetchDepartment = () => dispatch => {
+	dispatch(loadingDepartment(true))
 	axios
 		.get(process.env.REACT_APP_API + 'department/')
 		.then(response => {
 			dispatch(loadDepartment(response.data))
+			dispatch(loadingDepartment(false))
 		})
 		.catch(error => {
 			dispatch(loadDepartmentFailed())
+			dispatch(loadingDepartment(false))
 		})
 }
 
@@ -68,12 +77,12 @@ export const postDepartment = name => dispatch => {
 	axios
 		.post(process.env.REACT_APP_API + 'department/', department)
 		.then(response => {
-			dispatch(addingDepartment(false))
 			dispatch(addDepartmentResponse(response.data))
+			dispatch(addingDepartment(false))
 		})
 		.catch(error => {
-			dispatch(addingDepartment(false))
 			dispatch(addDepartmentFailed())
+			dispatch(addingDepartment(false))
 		})
 }
 
@@ -88,7 +97,7 @@ export const updateDepartmentFailed = () => {
 		type: DEPARTMENT_UPDATE_FAILED,
 	}
 }
-export const updateDepartment = (id,name) => dispatch => {
+export const updateDepartment = (id, name) => dispatch => {
 	dispatch(addingDepartment(true))
 	const department = {
 		department_id: id,
@@ -97,12 +106,12 @@ export const updateDepartment = (id,name) => dispatch => {
 	axios
 		.put(process.env.REACT_APP_API + 'department/', department)
 		.then(response => {
-			dispatch(addingDepartment(false))
 			dispatch(updateDepartmentResponse(response.data))
+			dispatch(addingDepartment(false))
 		})
 		.catch(error => {
-			dispatch(addingDepartment(false))
 			dispatch(updateDepartmentFailed())
+			dispatch(addingDepartment(false))
 		})
 }
 
@@ -117,16 +126,48 @@ export const deleteDepartmentFailed = () => {
 		type: DEPARTMENT_DELETE_FAILED,
 	}
 }
-export const deleteDepartment = (id) => dispatch => {
+export const deleteDepartment = id => dispatch => {
 	dispatch(addingDepartment(true))
 	axios
-		.delete(process.env.REACT_APP_API + 'department/'+id)
+		.delete(process.env.REACT_APP_API + 'department/' + id)
 		.then(response => {
-			dispatch(addingDepartment(false))
 			dispatch(deleteDepartmentResponse(response.data))
+			dispatch(addingDepartment(false))
 		})
 		.catch(error => {
-			dispatch(addingDepartment(false))
 			dispatch(updateDepartmentFailed())
+			dispatch(addingDepartment(false))
+		})
+}
+
+export const loadEmployee = data => {
+	return {
+		type: EMPLOYEE_LOAD,
+		payload: data,
+	}
+}
+export const loadingEmployee = mode => {
+	return {
+		type: EMPLOYEE_LOADING,
+		payload: mode,
+	}
+}
+export const loadEmployeeFailed = () => {
+	return {
+		type: EMPLOYEE_LOAD_FAILED,
+	}
+}
+
+export const fetchEmployee = () => dispatch => {
+	dispatch(loadingEmployee(true))
+	axios
+		.get(process.env.REACT_APP_API + 'employee/')
+		.then(response => {
+			dispatch(loadEmployee(response.data))
+			dispatch(loadingEmployee(false))
+		})
+		.catch(error => {
+			dispatch(loadEmployeeFailed())
+			dispatch(loadingEmployee(false))
 		})
 }

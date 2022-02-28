@@ -48,8 +48,10 @@ const Department = ({
 	const [showDeleteModal, setShowDeleteModal] = useState({ show: false, id: '', name: '' })
 
 	useEffect(() => {
-		fetchDepartment()
-	}, [fetchDepartment, addResponse, updateResponse, deleteResponse])
+		if (department.length === 0) {
+			fetchDepartment()
+		}
+	}, [department?.length, fetchDepartment, addResponse])
 
 	const department_data = (
 		<>

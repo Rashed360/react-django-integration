@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 import {
 	DEPARTMENT_LOAD,
+	DEPARTMENT_LOADING,
 	DEPARTMENT_LOAD_FAILED,
 	DEPARTMENT_ADDING,
 	DEPARTMENT_ADD_RESPONSE,
@@ -12,6 +13,9 @@ import {
 	DEPARTMENT_UPDATE_FAILED,
 	DEPARTMENT_DELETE_RESPONSE,
 	DEPARTMENT_DELETE_FAILED,
+	EMPLOYEE_LOAD,
+	EMPLOYEE_LOADING,
+	EMPLOYEE_LOAD_FAILED,
 } from './actions'
 
 const initialState = {
@@ -31,6 +35,8 @@ const initialState = {
 
 	EMPLOYEE: [],
 	EMPLOYEE_LOADING: true,
+	EMPLOYEE_LOADING_ERROR: false,
+
 }
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -39,13 +45,16 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				DEPARTMENT: department,
-				DEPARTMENT_LOADING: false,
+			}
+		case DEPARTMENT_LOADING:
+			return {
+				...state,
+				DEPARTMENT_LOADING: action.payload,
 			}
 		case DEPARTMENT_LOAD_FAILED:
 			return {
 				...state,
 				DEPARTMENT_LOADING_ERROR: true,
-				DEPARTMENT_LOADING: false,
 			}
 		case DEPARTMENT_ADDING:
 			return {
@@ -87,6 +96,21 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				DEPARTMENT_DELETE_FAILED: true,
+			}
+		case EMPLOYEE_LOAD:
+			return {
+				...state,
+				EMPLOYEE: action.payload,
+			}
+		case EMPLOYEE_LOADING:
+			return {
+				...state,
+				EMPLOYEE_LOADING: action.payload,
+			}
+		case EMPLOYEE_LOAD_FAILED:
+			return {
+				...state,
+				EMPLOYEE_LOAD_FAILED: true,
 			}
 		default:
 			return state
