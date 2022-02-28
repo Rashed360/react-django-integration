@@ -78,7 +78,7 @@ const DepartmentEditModal = ({
 								/>
 								<Form.Text className='text-muted'>Department name must be valid.</Form.Text>
 							</Form.Group>
-							<Button variant='primary' onClick={updateDepartmentHandle}>
+							<Button variant='warning' onClick={updateDepartmentHandle}>
 								Update Department
 							</Button>
 						</Form>

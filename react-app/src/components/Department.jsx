@@ -19,6 +19,9 @@ const mapStateToProps = state => {
 
 		updateResponse: state.DEPARTMENT_UPDATE_MSG,
 		updateFailed: state.DEPARTMENT_UPDATE_FAILED,
+
+		deleteResponse: state.DEPARTMENT_DELETE_MSG,
+		deleteFailed: state.DEPARTMENT_DELETE_FAILED,
 	}
 }
 
@@ -37,6 +40,8 @@ const Department = ({
 	addFailed,
 	updateResponse,
 	updateFailed,
+	deleteResponse,
+	deleteFailed,
 }) => {
 	const [showAddModal, setShowAddModal] = useState(false)
 	const [showEditModal, setShowEditModal] = useState({ show: false, id: '', name: '' })
@@ -44,7 +49,7 @@ const Department = ({
 
 	useEffect(() => {
 		fetchDepartment()
-	}, [fetchDepartment, addResponse, updateResponse])
+	}, [fetchDepartment, addResponse, updateResponse, deleteResponse])
 
 	const department_data = (
 		<>
@@ -53,6 +58,9 @@ const Department = ({
 				<p>Add New Department</p>
 				<Button size='sm' onClick={() => setShowAddModal(true)}>
 					Add Department
+				</Button>{' '}
+				<Button size='sm' variant='info' onClick={() => fetchDepartment()}>
+					Refresh
 				</Button>
 				{addResponse === null ? (
 					addFailed ? (
@@ -62,57 +70,64 @@ const Department = ({
 					<Toast variant={addFailed ? 'danger' : 'success'} msg={addResponse} />
 				)}
 			</div>
-			<Table bordered className='w-500'>
-				<thead>
-					<tr>
-						<th>Department Id</th>
-						<th>Department Name</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{department.map(dept => (
-						<tr key={dept.department_id}>
-							<td>{dept.department_id}</td>
-							<td>{dept.department_name}</td>
-							<td>
-								<Button
-									size='sm'
-									variant='warning'
-									onClick={() => {
-										setShowEditModal({
-											show: true,
-											id: dept.department_id,
-											name: dept.department_name,
-										})
-									}}
-								>
-									Edit
-								</Button>{' '}
-								<Button
-									size='sm'
-									variant='danger'
-									onClick={() => {
-										setShowDeleteModal({
-											id: dept.department_id,
-											name: dept.department_name,
-										})
-									}}
-								>
-									Delete
-								</Button>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</Table>
+			{department?.length === 0 ? (
+				<p>No Departments</p>
+			) : (
+				<>
+					<Table bordered className='w-500'>
+						<thead>
+							<tr>
+								<th>Department Id</th>
+								<th>Department Name</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{department.map(dept => (
+								<tr key={dept.department_id}>
+									<td>{dept.department_id}</td>
+									<td>{dept.department_name}</td>
+									<td>
+										<Button
+											size='sm'
+											variant='warning'
+											onClick={() => {
+												setShowEditModal({
+													show: true,
+													id: dept.department_id,
+													name: dept.department_name,
+												})
+											}}
+										>
+											Edit
+										</Button>{' '}
+										<Button
+											size='sm'
+											variant='danger'
+											onClick={() => {
+												setShowDeleteModal({
+													show: true,
+													id: dept.department_id,
+													name: dept.department_name,
+												})
+											}}
+										>
+											Delete
+										</Button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</Table>
+					<DepartmentEditModal showEditModal={showEditModal} setShowEditModal={setShowEditModal} />
+					<DepartmentDeleteModal showDeleteModal={showDeleteModal} setShowDeleteModal={setShowDeleteModal} />
+				</>
+			)}
 			<DepartmentAddModal showAddModal={showAddModal} setShowAddModal={setShowAddModal} />
-			<DepartmentEditModal showEditModal={showEditModal} setShowEditModal={setShowEditModal} />
-			<DepartmentDeleteModal showDeleteModal={showDeleteModal} setShowDeleteModal={setShowDeleteModal} />
 		</>
 	)
 
-	return loading ? <Loader /> : loadingError ? <div>Error Loading</div> : department_data
+	return loading ? <Loader /> : loadingError ? <p>Error Loading</p> : department_data
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Department)

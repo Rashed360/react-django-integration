@@ -12,6 +12,9 @@ export const DEPARTMENT_ADD_RESPONSE = 'DEPARTMENT_ADD_RESPONSE'
 export const DEPARTMENT_UPDATE_RESPONSE = 'DEPARTMENT_UPDATE_RESPONSE'
 export const DEPARTMENT_UPDATE_FAILED = 'DEPARTMENT_UPDATE_FAILED'
 
+export const DEPARTMENT_DELETE_RESPONSE = 'DEPARTMENT_DELETE_RESPONSE'
+export const DEPARTMENT_DELETE_FAILED = 'DEPARTMENT_DELETE_FAILED'
+
 export const EMPLOYEE_LOAD = 'EMPLOYEE_LOAD'
 export const EMPLOYEE_LOADING = 'EMPLOYEE_LOADING'
 export const EMPLOYEE_LOAD_FAILED = 'EMPLOYEE_LOAD_FAILED'
@@ -96,6 +99,31 @@ export const updateDepartment = (id,name) => dispatch => {
 		.then(response => {
 			dispatch(addingDepartment(false))
 			dispatch(updateDepartmentResponse(response.data))
+		})
+		.catch(error => {
+			dispatch(addingDepartment(false))
+			dispatch(updateDepartmentFailed())
+		})
+}
+
+export const deleteDepartmentResponse = msg => {
+	return {
+		type: DEPARTMENT_DELETE_RESPONSE,
+		payload: msg,
+	}
+}
+export const deleteDepartmentFailed = () => {
+	return {
+		type: DEPARTMENT_DELETE_FAILED,
+	}
+}
+export const deleteDepartment = (id) => dispatch => {
+	dispatch(addingDepartment(true))
+	axios
+		.delete(process.env.REACT_APP_API + 'department/'+id)
+		.then(response => {
+			dispatch(addingDepartment(false))
+			dispatch(deleteDepartmentResponse(response.data))
 		})
 		.catch(error => {
 			dispatch(addingDepartment(false))

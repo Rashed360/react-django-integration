@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { postDepartment } from '../redux/actions'
+import { deleteDepartment } from '../redux/actions'
 import Loader from './Loader'
 
 const mapStateToProps = state => {
@@ -12,38 +12,37 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		postDepartment: name => dispatch(postDepartment(name)),
+		deleteDepartment: id => dispatch(deleteDepartment(id)),
 	}
 }
 
-const DepartmentDeleteModal = ({
-	showAddModal,
-	setShowAddModal,
-	postDepartment,
-	addLoading,
-}) => {
-	const [departmentName, setDepartmentName] = useState('')
-	const [departmentError, setDepartmentError] = useState(false)
+const DepartmentDeleteModal = ({ showDeleteModal, setShowDeleteModal, deleteDepartment, addLoading }) => {
+	const [consent, setConsent] = useState(false)
+	const [consentError, setConsentError] = useState(false)
 
 	const postDepartmentHandle = () => {
-		if (departmentName === '') {
-			setDepartmentError(true)
+		if (consent === false) {
+			setConsentError(true)
 		} else {
-			postDepartment(departmentName)
-			setShowAddModal(false)
-            setDepartmentName('')
+			deleteDepartment(showDeleteModal.id)
+			setShowDeleteModal({ ...showDeleteModal, show: false })
+			setConsent(false)
 		}
 	}
 
-	const handleChange = event => {
-		setDepartmentName(event.target.value)
+	const handleChange = () => {
+		setConsent(!consent)
 	}
 
 	return (
 		<>
-			<Modal size='md' show={showAddModal} onHide={() => setShowAddModal(false)}>
+			<Modal
+				size='md'
+				show={showDeleteModal.show}
+				onHide={() => setShowDeleteModal({ ...showDeleteModal, show: false })}
+			>
 				<Modal.Header closeButton>
-					<Modal.Title id='modal-add'>Add Department</Modal.Title>
+					<Modal.Title id='modal-add'>Delete Department</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{addLoading ? (
@@ -51,19 +50,20 @@ const DepartmentDeleteModal = ({
 					) : (
 						<Form>
 							<Form.Group className='mb-3'>
-								<Form.Label>Department Name</Form.Label>
-								<Form.Control
-									name='name'
-									type='text'
-									className={departmentError ? 'is-invalid' : null}
-									value={departmentName}
-									onChange={handleChange}
-									placeholder='Enter Department Name'
-								/>
-								<Form.Text className='text-muted'>Department name must be valid.</Form.Text>
+								<Form.Group className='mb-3'>
+									<Form.Check
+										type='checkbox'
+										checked={consent}
+										onChange={handleChange}
+										className={consentError ? 'is-invalid' : null}
+										label={'Delete ' + showDeleteModal.name + '?'}
+									/>
+								</Form.Group>
+
+								<Form.Text className='text-muted'>Once deleted, it can't be restored!</Form.Text>
 							</Form.Group>
-							<Button variant='primary' onClick={postDepartmentHandle}>
-								Add Department
+							<Button variant='danger' onClick={postDepartmentHandle}>
+								Delete Department
 							</Button>
 						</Form>
 					)}

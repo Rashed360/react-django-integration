@@ -1,6 +1,6 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
-import {composeWithDevTools} from 'redux-devtools-extension'
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 import {
 	DEPARTMENT_LOAD,
@@ -10,6 +10,8 @@ import {
 	DEPARTMENT_ADD_FAILED,
 	DEPARTMENT_UPDATE_RESPONSE,
 	DEPARTMENT_UPDATE_FAILED,
+	DEPARTMENT_DELETE_RESPONSE,
+	DEPARTMENT_DELETE_FAILED,
 } from './actions'
 
 const initialState = {
@@ -20,9 +22,12 @@ const initialState = {
 	DEPARTMENT_ADD_LOADING: false,
 	DEPARTMENT_ADD_MSG: null,
 	DEPARTMENT_ADD_FAILED: false,
-	
+
 	DEPARTMENT_UPDATE_MSG: null,
 	DEPARTMENT_UPDATE_FAILED: false,
+
+	DEPARTMENT_DELETE_MSG: null,
+	DEPARTMENT_DELETE_FAILED: false,
 
 	EMPLOYEE: [],
 	EMPLOYEE_LOADING: true,
@@ -70,6 +75,18 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				DEPARTMENT_UPDATE_FAILED: true,
+			}
+		case DEPARTMENT_DELETE_RESPONSE:
+			return {
+				...state,
+				DEPARTMENT_ADD_LOADING: false,
+				DEPARTMENT_DELETE_MSG: action.payload,
+				DEPARTMENT_DELETE_FAILED: false,
+			}
+		case DEPARTMENT_DELETE_FAILED:
+			return {
+				...state,
+				DEPARTMENT_DELETE_FAILED: true,
 			}
 		default:
 			return state
