@@ -1,7 +1,8 @@
+import { useEffect } from 'react'
 import { useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { postDepartment } from '../redux/actions'
+import { fetchDepartment, updateDepartment } from '../redux/actions'
 import Loader from './Loader'
 
 const mapStateToProps = state => {
@@ -12,26 +13,33 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		postDepartment: name => dispatch(postDepartment(name)),
+		updateDepartment: (id, name) => dispatch(updateDepartment(id, name)),
+		fetchDepartment: () => dispatch(fetchDepartment()),
 	}
 }
 
-const DepartmentAddModal = ({
-	showAddModal,
-	setShowAddModal,
-	postDepartment,
+const DepartmentEditModal = ({
+	showEditModal,
+	setShowEditModal,
+	fetchDepartment,
+	updateDepartment,
 	addLoading,
 }) => {
 	const [departmentName, setDepartmentName] = useState('')
 	const [departmentError, setDepartmentError] = useState(false)
 
-	const postDepartmentHandle = () => {
+	useEffect(() => {
+		setDepartmentName(showEditModal.name)
+	}, [showEditModal.name])
+
+	const updateDepartmentHandle = () => {
 		if (departmentName === '') {
 			setDepartmentError(true)
 		} else {
-			postDepartment(departmentName)
-			setShowAddModal(false)
-            setDepartmentName('')
+			updateDepartment(showEditModal.id, departmentName)
+			setShowEditModal({ ...showEditModal, show: false })
+			setDepartmentName('')
+			fetchDepartment()
 		}
 	}
 
@@ -41,15 +49,23 @@ const DepartmentAddModal = ({
 
 	return (
 		<>
-			<Modal size='md' show={showAddModal} onHide={() => setShowAddModal(false)}>
+			<Modal
+				size='md'
+				show={showEditModal.show}
+				onHide={() => setShowEditModal({ ...showEditModal, show: false })}
+			>
 				<Modal.Header closeButton>
-					<Modal.Title id='modal-add'>Add Department</Modal.Title>
+					<Modal.Title id='modal-add'>Update Department Name</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{addLoading ? (
 						<Loader />
 					) : (
 						<Form>
+							<Form.Group className='mb-3'>
+								<Form.Label>Department Id</Form.Label>
+								<Form.Control name='id' type='text' disabled={true} value={showEditModal.id} />
+							</Form.Group>
 							<Form.Group className='mb-3'>
 								<Form.Label>Department Name</Form.Label>
 								<Form.Control
@@ -62,8 +78,8 @@ const DepartmentAddModal = ({
 								/>
 								<Form.Text className='text-muted'>Department name must be valid.</Form.Text>
 							</Form.Group>
-							<Button variant='primary' onClick={postDepartmentHandle}>
-								Add Department
+							<Button variant='primary' onClick={updateDepartmentHandle}>
+								Update Department
 							</Button>
 						</Form>
 					)}
@@ -73,4 +89,4 @@ const DepartmentAddModal = ({
 	)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DepartmentAddModal)
+export default connect(mapStateToProps, mapDispatchToProps)(DepartmentEditModal)

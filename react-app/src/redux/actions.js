@@ -9,6 +9,9 @@ export const DEPARTMENT_ADDING = 'DEPARTMENT_ADDING'
 export const DEPARTMENT_ADD_FAILED = 'DEPARTMENT_ADD_FAILED'
 export const DEPARTMENT_ADD_RESPONSE = 'DEPARTMENT_ADD_RESPONSE'
 
+export const DEPARTMENT_UPDATE_RESPONSE = 'DEPARTMENT_UPDATE_RESPONSE'
+export const DEPARTMENT_UPDATE_FAILED = 'DEPARTMENT_UPDATE_FAILED'
+
 export const EMPLOYEE_LOAD = 'EMPLOYEE_LOAD'
 export const EMPLOYEE_LOADING = 'EMPLOYEE_LOADING'
 export const EMPLOYEE_LOAD_FAILED = 'EMPLOYEE_LOAD_FAILED'
@@ -68,5 +71,34 @@ export const postDepartment = name => dispatch => {
 		.catch(error => {
 			dispatch(addingDepartment(false))
 			dispatch(addDepartmentFailed())
+		})
+}
+
+export const updateDepartmentResponse = msg => {
+	return {
+		type: DEPARTMENT_UPDATE_RESPONSE,
+		payload: msg,
+	}
+}
+export const updateDepartmentFailed = () => {
+	return {
+		type: DEPARTMENT_UPDATE_FAILED,
+	}
+}
+export const updateDepartment = (id,name) => dispatch => {
+	dispatch(addingDepartment(true))
+	const department = {
+		department_id: id,
+		department_name: name,
+	}
+	axios
+		.put(process.env.REACT_APP_API + 'department/', department)
+		.then(response => {
+			dispatch(addingDepartment(false))
+			dispatch(updateDepartmentResponse(response.data))
+		})
+		.catch(error => {
+			dispatch(addingDepartment(false))
+			dispatch(updateDepartmentFailed())
 		})
 }

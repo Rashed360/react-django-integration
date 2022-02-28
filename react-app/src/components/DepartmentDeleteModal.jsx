@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-const DepartmentAddModal = ({
+const DepartmentDeleteModal = ({
 	showAddModal,
 	setShowAddModal,
 	postDepartment,
@@ -73,4 +73,4 @@ const DepartmentAddModal = ({
 	)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DepartmentAddModal)
+export default connect(mapStateToProps, mapDispatchToProps)(DepartmentDeleteModal)

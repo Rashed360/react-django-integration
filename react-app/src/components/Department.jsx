@@ -5,6 +5,8 @@ import { fetchDepartment } from '../redux/actions'
 import Loader from './Loader'
 import Toast from './Toast'
 import DepartmentAddModal from './DepartmentAddModal'
+import DepartmentEditModal from './DepartmentEditModal'
+import DepartmentDeleteModal from './DepartmentDeleteModal'
 
 const mapStateToProps = state => {
 	return {
@@ -14,6 +16,9 @@ const mapStateToProps = state => {
 
 		addResponse: state.DEPARTMENT_ADD_MSG,
 		addFailed: state.DEPARTMENT_ADD_FAILED,
+
+		updateResponse: state.DEPARTMENT_UPDATE_MSG,
+		updateFailed: state.DEPARTMENT_UPDATE_FAILED,
 	}
 }
 
@@ -23,19 +28,30 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-const Department = ({ fetchDepartment, department, loading, loadingError, addResponse, addFailed }) => {
-	const [showModal, setShowModal] = useState(false)
+const Department = ({
+	fetchDepartment,
+	department,
+	loading,
+	loadingError,
+	addResponse,
+	addFailed,
+	updateResponse,
+	updateFailed,
+}) => {
+	const [showAddModal, setShowAddModal] = useState(false)
+	const [showEditModal, setShowEditModal] = useState({ show: false, id: '', name: '' })
+	const [showDeleteModal, setShowDeleteModal] = useState({ show: false, id: '', name: '' })
 
 	useEffect(() => {
 		fetchDepartment()
-	}, [fetchDepartment, addResponse])
+	}, [fetchDepartment, addResponse, updateResponse])
 
 	const department_data = (
 		<>
 			<h4>List of Departments</h4>
 			<div className='my-3'>
 				<p>Add New Department</p>
-				<Button className='btn-sm' onClick={() => setShowModal(true)}>
+				<Button size='sm' onClick={() => setShowAddModal(true)}>
 					Add Department
 				</Button>
 				{addResponse === null ? (
@@ -59,12 +75,40 @@ const Department = ({ fetchDepartment, department, loading, loadingError, addRes
 						<tr key={dept.department_id}>
 							<td>{dept.department_id}</td>
 							<td>{dept.department_name}</td>
-							<td>Edit/Delete</td>
+							<td>
+								<Button
+									size='sm'
+									variant='warning'
+									onClick={() => {
+										setShowEditModal({
+											show: true,
+											id: dept.department_id,
+											name: dept.department_name,
+										})
+									}}
+								>
+									Edit
+								</Button>{' '}
+								<Button
+									size='sm'
+									variant='danger'
+									onClick={() => {
+										setShowDeleteModal({
+											id: dept.department_id,
+											name: dept.department_name,
+										})
+									}}
+								>
+									Delete
+								</Button>
+							</td>
 						</tr>
 					))}
 				</tbody>
 			</Table>
-			<DepartmentAddModal showModal={showModal} setShowModal={setShowModal} />
+			<DepartmentAddModal showAddModal={showAddModal} setShowAddModal={setShowAddModal} />
+			<DepartmentEditModal showEditModal={showEditModal} setShowEditModal={setShowEditModal} />
+			<DepartmentDeleteModal showDeleteModal={showDeleteModal} setShowDeleteModal={setShowDeleteModal} />
 		</>
 	)
 

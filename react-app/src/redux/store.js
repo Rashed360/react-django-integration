@@ -8,6 +8,8 @@ import {
 	DEPARTMENT_ADDING,
 	DEPARTMENT_ADD_RESPONSE,
 	DEPARTMENT_ADD_FAILED,
+	DEPARTMENT_UPDATE_RESPONSE,
+	DEPARTMENT_UPDATE_FAILED,
 } from './actions'
 
 const initialState = {
@@ -18,6 +20,9 @@ const initialState = {
 	DEPARTMENT_ADD_LOADING: false,
 	DEPARTMENT_ADD_MSG: null,
 	DEPARTMENT_ADD_FAILED: false,
+	
+	DEPARTMENT_UPDATE_MSG: null,
+	DEPARTMENT_UPDATE_FAILED: false,
 
 	EMPLOYEE: [],
 	EMPLOYEE_LOADING: true,
@@ -53,6 +58,18 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				DEPARTMENT_ADD_FAILED: true,
+			}
+		case DEPARTMENT_UPDATE_RESPONSE:
+			return {
+				...state,
+				DEPARTMENT_ADD_LOADING: false,
+				DEPARTMENT_UPDATE_MSG: action.payload,
+				DEPARTMENT_UPDATE_FAILED: false,
+			}
+		case DEPARTMENT_UPDATE_FAILED:
+			return {
+				...state,
+				DEPARTMENT_UPDATE_FAILED: true,
 			}
 		default:
 			return state
